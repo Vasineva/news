@@ -18,16 +18,12 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from .models import Post, Category, Author
+from .models import Post, Category
 
 
 class PostForm(forms.ModelForm):
     title = forms.CharField(max_length=128, label='Заголовок')
-    author = forms.ModelChoiceField(
-        queryset=Author.objects.all(),
-        label='Автор',
-        empty_label='Выберите автора'
-    )
+
     categories = forms.ModelMultipleChoiceField(
         queryset=Category.objects.all(),
         widget=forms.CheckboxSelectMultiple,
@@ -37,7 +33,7 @@ class PostForm(forms.ModelForm):
 
     class Meta:
         model = Post
-        fields = ['title', 'content', 'categories', 'author']
+        fields = ['title', 'content', 'categories',]
 
     def clean(self):
         cleaned_data = super().clean()

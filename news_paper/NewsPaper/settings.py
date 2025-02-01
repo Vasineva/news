@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-yzlnwmp(x**vj#l*z#+p-68*pd_iwjvhzprpgy7&t)!ibj@5$3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -41,15 +41,22 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     'news',
-    'accounts',
+    'sign',
     'django_filters',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.yandex',
 ]
-LOGIN_URL = '/accounts/login/'
+
 SITE_ID = 1
+
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
@@ -84,6 +91,11 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 WSGI_APPLICATION = 'NewsPaper.wsgi.application'
@@ -145,9 +157,9 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
-ACCOUNT_FORMS = {'signup': 'accounts.forms.BasicSignupForm'}
+ACCOUNT_FORMS = {'signup': 'sign.models.BasicSignupForm'}
 
-LOGIN_REDIRECT_URL = '/accounts/profile/'
+
 
 
 

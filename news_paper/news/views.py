@@ -5,21 +5,21 @@
 сортировку и пагинацию.
 
 """
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, PermissionDenied
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse_lazy
-from .models import Post
+from .models import Post, Author
 from .filters import NewsFilter
 from .forms import PostForm
-
 
 # Отображение списка новостей.
 class NewsList(ListView):
     model = Post
     ordering = '-created_at'
-    template_name = 'news.html'
+    template_name = 'post/news.html'
     context_object_name = 'posts'
     paginate_by = 10
+
 
     # Добавляет общее количество новостей в контекст.
     def get_context_data(self, **kwargs):
@@ -30,14 +30,14 @@ class NewsList(ListView):
 # Отображение подробной информации о конкретной новости.
 class NewsDetail(DetailView):
     model = Post
-    template_name = 'news_detail.html'
+    template_name = 'post/news_detail.html'
     context_object_name = 'post'
     pk_url_kwarg = 'id'
 
 # Поиск новостей по заданным фильтрам.
 class NewsSearch(ListView):
     model = Post
-    template_name = 'news_search.html'
+    template_name = 'post/news_search.html'
     context_object_name = 'posts'
     paginate_by = 10
 
@@ -54,21 +54,24 @@ class NewsSearch(ListView):
         return context
 
 # Создание нового поста.
-class PostCreate(CreateView):
+class PostCreate(PermissionRequiredMixin,LoginRequiredMixin, CreateView):
     form_class = PostForm
     model = Post
-    template_name = 'post_create.html'
-    success_url = reverse_lazy('news_list')  # Имя маршрута списка новостей
+    template_name = 'post/post_create.html'
+    success_url = reverse_lazy('news_list')
+    permission_required = ('news.add_post',)
 
-
-    # Определяет тип поста (новость или статья) и сохраняет его в зависимости от URL.
     def form_valid(self, form):
         post = form.save(commit=False)
-        # Определяем тип поста
+        author, created = Author.objects.get_or_create(user=self.request.user)
+        post.author = author
+
+        # Определяем тип поста (новость или статья)
         if 'news' in self.request.path:
             post.post_type = 'NW'
         else:
             post.post_type = 'AR'
+
         post.save()
         return super().form_valid(form)
 
@@ -82,16 +85,23 @@ class PostCreate(CreateView):
         return context
 
 # Обновление существующего поста.
-class PostUpdate(LoginRequiredMixin, UpdateView):
+class PostUpdate(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
     form_class = PostForm
     model = Post
-    template_name = 'post_create.html'
+    template_name = 'post/post_create.html'
+    permission_required = ('news.change_post')
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if obj.author.user != self.request.user:
+            raise PermissionDenied
+        return obj
 
 
 # Удаление поста.
 class PostDelete(DeleteView):
     model = Post
-    template_name = 'post_delete.html'
+    template_name = 'post/post_delete.html'
     success_url = reverse_lazy('news_list') # URL для перенаправления после удаления поста.
 
     # Передает тип поста в контекст.
@@ -106,5 +116,7 @@ class IndexView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['is_not_premium'] = not self.request.user.groups.filter(name='premium').exists()
+        context['is_not_authors'] = not self.request.user.groups.filter(name = 'authors').exists()
         return context
+
+
