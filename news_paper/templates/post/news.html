@@ -3,21 +3,23 @@
 {% load custom_filters %}
 
 {% block title %}
-Все новости
+news
 {% endblock title %}
 
 <!-- В контенте на странице мы выводим все новости -->
 {% block content %}
-<h1>Все новости</h1>
-<p>Количество новостей: {{ total_news_count }}</p>
-<ul>
+<h1>Все статьи и новости</h1>
+<p>Количество: {{ total_news_count }}</p>
+
     {% for post in posts %}
-    <li>
         <h2><a href="{% url 'news_detail' post.id %}">{{post.title|censor}}</a></h2>
         <p>Дата публикации: {{post.created_at|date:"d.m.Y"}}</p>
         <p>{{post.content|truncatewords:20|censor}}</p>
-    </li>
-</ul>
+        <p>
+        {% for c in post.categories.all%}
+            <<a href="{% url 'news_category' c.id %}">{{ c.name }}</a>
+        {% endfor %}
+        </p>
     {% endfor %}
     {% if page_obj.has_previous %}
        <a href="?page=1">1</a>

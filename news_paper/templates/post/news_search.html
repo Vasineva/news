@@ -19,13 +19,11 @@
        {# Добавим кнопку отправки данных формы #}
        <input type="submit" value="Найти" />
    </form>
-<ul>
+
     {% for post in posts %}
-    <li>
         <h2>{{ post.title|censor }}</h2>
         <p>Дата публикации: {{ post.created_at|date:"d.m.Y" }}</p>
         <p>{{ post.content|truncatewords:20|censor }}</p>
-    </li>
     {% endfor %}
     {% if page_obj.has_previous %}
        {# Для каждой ссылки пагинации указываем обработку через новый тег #}
@@ -45,5 +43,4 @@
            <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
        {% endif %}
    {% endif %}
-</ul>
 {% endblock content %}

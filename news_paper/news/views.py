@@ -8,9 +8,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, PermissionDenied
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse_lazy
-from .models import Post, Author
+from .models import Post, Author, Category
 from .filters import NewsFilter
 from .forms import PostForm
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
 
 # Отображение списка новостей.
 class NewsList(ListView):
@@ -25,6 +27,28 @@ class NewsList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['total_news_count'] = Post.objects.count()
+        return context
+
+class CategoryList(LoginRequiredMixin, ListView):
+    model = Post
+    ordering = '-created_at'
+    template_name = 'post/news_category.html'
+    context_object_name = 'news'
+    paginate_by = 10
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.category = None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.category = Category.objects.get(pk=self.kwargs.get('pk'))
+        queryset = queryset.filter(categories=self.category)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = self.category
         return context
 
 # Отображение подробной информации о конкретной новости.
@@ -119,4 +143,12 @@ class IndexView(LoginRequiredMixin, TemplateView):
         context['is_not_authors'] = not self.request.user.groups.filter(name = 'authors').exists()
         return context
 
+
+@login_required
+def subscribe(request, pk):
+    user = request.user
+    is_subscriber = Category.objects.get(pk=pk)
+    if not user.subscribers.filter(pk=pk).exists():
+        is_subscriber.subscribers.add(user)
+    return redirect(request.META.get('HTTP_REFERER'))
 
