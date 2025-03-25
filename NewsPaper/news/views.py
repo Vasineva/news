@@ -13,6 +13,7 @@ from .filters import NewsFilter
 from .forms import PostForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
+from django.core.cache import cache # импортируем наш кэш
 
 # Отображение списка новостей.
 class NewsList(ListView):
@@ -28,6 +29,7 @@ class NewsList(ListView):
         context = super().get_context_data(**kwargs)
         context['total_news_count'] = Post.objects.count()
         return context
+
 
 class CategoryList(LoginRequiredMixin, ListView):
     model = Post
@@ -56,7 +58,19 @@ class NewsDetail(DetailView):
     model = Post
     template_name = 'post/news_detail.html'
     context_object_name = 'post'
-    pk_url_kwarg = 'id'
+
+    def get_object(self, *args, **kwargs):  # переопределяем метод получения объекта, как ни странно
+
+        obj = cache.get(f'post-{self.kwargs["pk"]}',
+                        None)  # кэш очень похож на словарь, и метод get действует так же. Он забирает значение по ключу, если его нет, то забирает None.
+
+        # если объекта нет в кэше, то получаем его и записываем в кэш
+
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'product-{self.kwargs["pk"]}', obj)
+
+        return obj
 
 # Поиск новостей по заданным фильтрам.
 class NewsSearch(ListView):

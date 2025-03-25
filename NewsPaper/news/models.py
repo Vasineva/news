@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.core.cache import cache
 
 article = 'AR'
 news = 'NW'
@@ -71,6 +72,10 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse('news_detail', args=[str(self.id)])
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # сначала вызываем метод родителя, чтобы объект сохранился
+        cache.delete(f'post-{self.pk}')  # затем удаляем его из кэша, чтобы сбросить его
 
 # Промежуточная модель для связи «многие ко многим»
 class PostCategory(models.Model):

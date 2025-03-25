@@ -12,7 +12,7 @@ news
 <p>Количество: {{ total_news_count }}</p>
 
     {% for post in posts %}
-        <h2><a href="{% url 'news_detail' post.id %}">{{post.title|censor}}</a></h2>
+        <h2><a href="{% url 'news_detail' post.pk %}">{{post.title|censor}}</a></h2>
         <p>Дата публикации: {{post.created_at|date:"d.m.Y"}}</p>
         <p>{{post.content|truncatewords:20|censor}}</p>
         <p>
