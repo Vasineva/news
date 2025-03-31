@@ -1,4 +1,4 @@
-#: .\news\views.py:25
+#: .\news\views.py:27
 msgid "Hello world"
 msgstr ""
 

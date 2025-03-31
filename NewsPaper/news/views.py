@@ -17,6 +17,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.core.cache import cache # импортируем наш кэш
 from django.utils.translation import gettext as _ # импортируем функцию для перевода
+from django.http import HttpResponse
+from django.views import View
 
 # Create your views here.
 
