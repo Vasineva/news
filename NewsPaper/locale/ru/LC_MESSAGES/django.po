@@ -1,0 +1,83 @@
+#: .\news\views.py:25
+msgid "Hello world"
+msgstr ""
+
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#: .\templates\account\login.html:5 .\templates\account\login.html:9
+#: .\templates\account\login.html:31 .\templates\allauth\layouts\base.html:70
+msgid "Sign In"
+msgstr ""
+
+#: .\templates\account\login.html:19
+#, python-format
+msgid ""
+"If you have not created an account yet, then please %(link)ssign "
+"up%(end_link)s first."
+msgstr ""
+
+#: .\templates\account\login.html:42
+msgid "Sign in with a passkey"
+msgstr ""
+
+#: .\templates\account\login.html:47
+msgid "Mail me a sign-in code"
+msgstr ""
+
+#: .\templates\account\logout.html:4 .\templates\account\logout.html:8
+#: .\templates\account\logout.html:21 .\templates\allauth\layouts\base.html:63
+msgid "Sign Out"
+msgstr ""
+
+#: .\templates\account\logout.html:11
+msgid "Are you sure you want to sign out?"
+msgstr ""
+
+#: .\templates\account\signup.html:4
+msgid "Signup"
+msgstr ""
+
+#: .\templates\account\signup.html:8 .\templates\account\signup.html:30
+#: .\templates\allauth\layouts\base.html:76
+msgid "Sign Up"
+msgstr ""
+
+#: .\templates\account\signup.html:17
+#, python-format
+msgid "Already have an account? Then please %(link)ssign in%(end_link)s."
+msgstr ""
+
+#: .\templates\account\signup.html:39
+msgid "Sign up using a passkey"
+msgstr ""
+
+#: .\templates\allauth\layouts\base.html:20
+msgid "Messages:"
+msgstr ""
+
+#: .\templates\allauth\layouts\base.html:27
+msgid "Menu:"
+msgstr ""
+
+#: .\templates\allauth\layouts\base.html:33
+msgid "Change Email"
+msgstr ""
+
+#: .\templates\allauth\layouts\base.html:39
+msgid "Change Password"
+msgstr ""
+
+#: .\templates\allauth\layouts\base.html:45
+msgid "Account Connections"
+msgstr ""
+
+#: .\templates\allauth\layouts\base.html:51
+msgid "Two-Factor Authentication"
+msgstr ""
+
+#: .\templates\allauth\layouts\base.html:57
+msgid "Sessions"
+msgstr ""

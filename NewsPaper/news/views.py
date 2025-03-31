@@ -6,6 +6,8 @@
 
 """
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, PermissionDenied
+
+
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse_lazy
 from .models import Post, Author, Category
@@ -14,6 +16,14 @@ from .forms import PostForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.core.cache import cache # импортируем наш кэш
+from django.utils.translation import gettext as _ # импортируем функцию для перевода
+
+# Create your views here.
+
+class Index(View):
+    def get(self, request):
+        string = _('Hello world')
+        return HttpResponse(string)
 
 # Отображение списка новостей.
 class NewsList(ListView):
@@ -165,4 +175,5 @@ def subscribe(request, pk):
     if not user.subscribers.filter(pk=pk).exists():
         is_subscriber.subscribers.add(user)
     return redirect(request.META.get('HTTP_REFERER'))
+
 
